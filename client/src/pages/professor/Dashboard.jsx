@@ -153,13 +153,13 @@ export default function ProfessorDashboard() {
         </div>
       )}
     
-     <div className="mt-8">
+      <div className="mt-8">
       <div className="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl shadow-lg p-6 text-white w-full">
         <div className="flex justify-between items-start">
           <div>
             <p className="text-emerald-100 text-sm font-medium">Zarada za tekući mjesec</p>
             <p className="text-3xl font-bold mt-2">
-              {revenueLoading ? "..." : `$${7.5}`}
+              {revenueLoading ? "..." : `$${currentMonthRevenue.toFixed(2)}`}
             </p>
           </div>
           <div className="text-3xl bg-white/20 rounded-full p-3">
@@ -170,7 +170,7 @@ export default function ProfessorDashboard() {
           Platforma zadržava $0.50 po eseju
         </div>
       </div>
-      </div>
+    </div>
  
 
 
