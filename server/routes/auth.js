@@ -136,6 +136,52 @@ router.get("/me", authenticateToken, (req, res) => {
   }
 });
 
+// newsletter pretplata
+router.post("/subscribe-newsletter", authenticateToken, (req, res) => {
+  const userId = req.user.id;
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: "Email je obavezan" });
+  }
+
+  try {
+    // Provjeri da li korisnik postoji i da li se email poklapa
+    const user = db
+      .prepare("SELECT id, email, newsletter FROM users WHERE id = ?")
+      .get(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "Korisnik nije pronađen" });
+    }
+
+    // Provjeri da li je email isti kao u bazi 
+    if (user.email !== email) {
+      return res.status(400).json({ message: "Email se ne poklapa sa korisničkim nalogom" });
+    }
+
+    if (user.newsletter === 1) {
+      return res.status(200).json({ message: "Već ste prijavljeni na newsletter", alreadySubscribed: true });
+    }
+
+    // Ažuriraj newsletter field iz 0 u 1
+    const result = db
+      .prepare("UPDATE users SET newsletter = 1 WHERE id = ?")
+      .run(userId);
+
+    if (result.changes === 0) {
+      return res.status(404).json({ message: "Korisnik nije pronađen" });
+    }
+
+    res.status(200).json({ message: "Uspješno ste prijavljeni na newsletter", subscribed: true });
+
+  } catch (err) {
+    console.error("NEWSLETTER SUBSCRIBE ERROR:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 module.exports = router;
 module.exports.authenticateToken = authenticateToken;
 module.exports.requireRole = requireRole;

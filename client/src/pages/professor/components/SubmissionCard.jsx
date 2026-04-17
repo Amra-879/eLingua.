@@ -27,12 +27,9 @@ export default function SubmissionCard({ submission, type = "pending" }) {
             <span className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">
               {submission.language_name}
             </span>
-            <span className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-medium">
-              {submission.level}
-            </span>
             {submission.assessed_level && (
               <span className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-medium">
-                Ocijenjeno: {submission.assessed_level}
+                Nivo: {submission.assessed_level}
               </span>
             )}
           </div>
@@ -40,9 +37,6 @@ export default function SubmissionCard({ submission, type = "pending" }) {
           <div className="flex gap-4 text-sm text-gray-400 flex-wrap">
             <span>📝 {submission.measurement} riječi</span>
             <span>🕐 {formatDate(submission.created_at)}</span>
-            {type === "reviewed" && submission.created_at && (
-              <span>✅ Ocijenjeno: {formatDate(submission.created_at)}</span>
-            )}
           </div>
         </div>
 

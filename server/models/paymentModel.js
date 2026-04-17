@@ -60,6 +60,55 @@ const getRevenueByLanguage = () => {
   `).all();
 };
 
+
+/**
+ * Dohvata prihod po profesorima za tekući mjesec
+ * Platforma zadržava 0.5 USD po eseju
+ */
+
+const getRevenueByProfessor = () => {
+  return db.prepare(`
+    SELECT 
+      u.id as professor_id,
+      u.name as professor_name,
+      u.last_name as professor_last_name,
+      COUNT(f.id) as reviewed_essays,
+      ROUND(SUM(pay.amount - 0.5), 2) as total_revenue
+    FROM feedback f
+    JOIN submissions s ON f.submission_id = s.id
+    JOIN payments pay ON pay.submission_id = s.id
+    JOIN users u ON f.professor_id = u.id
+    WHERE pay.status = 'completed'
+      AND f.professor_id IS NOT NULL
+    GROUP BY u.id, u.name, u.last_name
+    ORDER BY total_revenue DESC
+  `).all();
+};
+
+/**
+ * Dohvata prihod po profesorima za tekući mjesec
+ * Platforma zadržava 0.5 USD po eseju
+ */
+  const getCurrentMonthRevenueByProfessor = () => {
+    return db.prepare(`
+      SELECT 
+        u.id as professor_id,
+        u.name as professor_name,
+        u.last_name as professor_last_name,
+        COUNT(f.id) as reviewed_essays_this_month,
+        ROUND(SUM(pay.amount - 0.5), 2) as revenue_this_month
+      FROM feedback f
+      JOIN submissions s ON f.submission_id = s.id
+      JOIN payments pay ON pay.submission_id = s.id
+      JOIN users u ON f.professor_id = u.id
+      WHERE pay.status = 'completed'
+        AND f.professor_id IS NOT NULL
+        AND strftime('%Y-%m', feedback.created_at) = strftime('%Y-%m', 'now')
+      GROUP BY u.id, u.name, u.last_name
+      ORDER BY revenue_this_month DESC
+    `).all();
+};
+
 const getTotalRevenue = () => {
   return db.prepare(`
     SELECT ROUND(SUM(amount), 2) as total
@@ -76,5 +125,7 @@ module.exports = {
   linkPaymentToSubmission,
   getPaymentsByStudent,
   getRevenueByLanguage,
+  getRevenueByProfessor,
+  getCurrentMonthRevenueByProfessor,
   getTotalRevenue,
 };

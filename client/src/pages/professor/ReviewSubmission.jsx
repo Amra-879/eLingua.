@@ -299,9 +299,9 @@ export default function ReviewSubmission() {
           </button>
         ) : (
           <div className="bg-green-50 border border-green-200 text-green-700 px-5 py-3 rounded-xl text-sm text-center">
-            ✅ Feedback je već poslan za ovaj esej
+             Feedback za ovaj esej je poslan.
           </div>
-        )}
+        )} 
       </div>
 
     </div>

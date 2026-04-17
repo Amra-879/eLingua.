@@ -21,6 +21,13 @@ export default function ProfessorDashboard() {
     enabled: !!user && user.role === "professor",
   });
 
+  const { data: revenueData, isLoading: revenueLoading } = useQuery({
+    queryKey: ["professor-revenue", user?.id],
+    queryFn: () => api.get("/payments/professor/revenue").then((res) => res.data),
+    enabled: !!user && user.role === "professor",
+  });
+
+
   useEffect(() => {
     if (!loading && (!user || user.role !== "professor")) navigate("/");
   }, [user, loading, navigate]);
@@ -31,11 +38,12 @@ export default function ProfessorDashboard() {
   const pendingCount = pending?.length ?? 0;
   const gradedCount = graded?.length ?? 0;
   const recentPending = pending?.slice(0, 3) ?? [];
+  const currentMonthRevenue = revenueData?.current_month?.revenue_this_month ?? 0;
+
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-10">
 
-      {/* POZDRAV */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[#00296b]">
           Dobrodošli, {user.name}! 👋
@@ -139,16 +147,34 @@ export default function ProfessorDashboard() {
       {/* NEMA PENDING */}
       {pendingCount === 0 && (
         <div className="bg-green-50 border border-green-200 rounded-2xl p-8 text-center">
-          <p className="text-4xl mb-3">🎉</p>
-          <p className="text-green-700 font-semibold text-lg">
-            Sve si ocijenio/la!
-          </p>
           <p className="text-green-600 text-sm mt-1">
             Nema eseja na čekanju trenutno.
           </p>
         </div>
       )}
+    
+     <div className="mt-8">
+      <div className="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl shadow-lg p-6 text-white w-full">
+        <div className="flex justify-between items-start">
+          <div>
+            <p className="text-emerald-100 text-sm font-medium">Zarada za tekući mjesec</p>
+            <p className="text-3xl font-bold mt-2">
+              {revenueLoading ? "..." : `$${7.5}`}
+            </p>
+          </div>
+          <div className="text-3xl bg-white/20 rounded-full p-3">
+            💰
+          </div>
+        </div>
+        <div className="mt-3 pt-3 border-t border-white/20 text-xs text-emerald-100">
+          Platforma zadržava $0.50 po eseju
+        </div>
+      </div>
+      </div>
+ 
+
 
     </div>
+    
   );
 }

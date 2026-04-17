@@ -8,13 +8,6 @@ import { useEffect } from "react";
 
 export default function EssayRenderer({ content }) {
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Underline,
-      TextStyle,
-      Color,
-      Highlight.configure({ multicolor: true }),
-    ],
     content: "",
     editable: false,
     editorProps: {
