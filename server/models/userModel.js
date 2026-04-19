@@ -17,7 +17,7 @@ const getTopStudents = () => {
     LEFT JOIN payments pay ON pay.submission_id = s.id AND pay.status = 'completed'
     GROUP BY s.student_id
     ORDER BY submission_count DESC
-    LIMIT 5
+    LIMIT 3
   `).all();
 };
 

@@ -6,32 +6,42 @@ const createFeedback = (req, res) => {
   const { submission_id, feedback_essay, feedback_general, assessed_level } = req.body;
   const professor_id = req.user.id;
 
-  if (!submission_id || !feedback_essay) {
-    return res.status(400).json({ message: "Submission ID i feedback tekst su obavezni" });
+  if (!submission_id) {
+    return res.status(400).json({ message: "Submission ID je obavezan" });
   }
 
   try {
-    // provjeri da li submission postoji
     const submission = submissionModel.getSubmissionById(submission_id);
     if (!submission) {
       return res.status(404).json({ message: "Submission not found" });
     }
+    const isText = submission.type === "text";
+    
+    // Za tekstualne eseje, feedback_essay je obavezan
+    if (isText && !feedback_essay) {
+      return res.status(400).json({ message: "Feedback tekst je obavezan za pisani esej" });
+    }
 
-    // provjeri da li je već ocijenjen
+    // Za audio eseje, feedback_essay nije potreban 
+    // Ali bar generalni komentar mora postojati
+    if (!feedback_essay && !feedback_general) {
+      return res.status(400).json({ 
+        message: "Morate ostaviti opći feedback za ovaj esej" 
+      });
+    }
+
     if (submission.status === "reviewed") {
       return res.status(400).json({ message: "Submission je već ocijenjen" });
     }
 
-    // kreiraj feedback
     feedbackModel.createFeedback(
       submission_id,
       professor_id,
-      feedback_essay,
+      feedback_essay || null,      
       feedback_general || null,
       assessed_level || null
     );
 
-    // označi submission kao reviewed
     submissionModel.markAsReviewed(submission_id);
 
     res.status(201).json({ message: "Feedback uspješno poslan" });
@@ -40,7 +50,6 @@ const createFeedback = (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 // GET /api/feedback/submission/:submissionId
 const getFeedbackBySubmission = (req, res) => {
   const { submissionId } = req.params;

@@ -303,7 +303,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                   <span className="text-sm font-semibold text-indigo-600">
-                    {prof.feedback_count} ocjena
+                    {prof.feedback_count} ocjene
                   </span>
                 </div>
               ))}

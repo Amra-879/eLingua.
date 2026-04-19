@@ -64,7 +64,7 @@ const getRecentSubmissions = () => {
     LEFT JOIN feedback f ON f.submission_id = s.id
     LEFT JOIN users pu ON f.professor_id = pu.id
     ORDER BY s.created_at DESC
-    LIMIT 10
+    LIMIT 6
   `).all();
 };
 

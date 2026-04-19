@@ -69,7 +69,7 @@ const getTopProfessors = () => {
     JOIN languages l ON pr.language = l.id
     GROUP BY f.professor_id
     ORDER BY feedback_count DESC
-    LIMIT 5
+    LIMIT 3
   `).all();
 };
 

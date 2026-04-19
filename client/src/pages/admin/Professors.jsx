@@ -1,4 +1,3 @@
-// src/pages/admin/Professors.jsx
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../context/AuthContext";

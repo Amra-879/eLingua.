@@ -176,58 +176,48 @@ export default function EssayDetail() {
           <ReadOnlyEditor content={submission?.text_content} />
         )}
       </div>
+     { /* Feedback text */ }
+     {isReviewed && (
+  <>
+    {isText && (
+      <div className="bg-white rounded-2xl shadow-md p-6 mb-6">
+        <h2 className="text-lg font-semibold text-[#00296b] mb-2">
+          Feedback profesora
+        </h2>
+        <p className="text-sm text-gray-500 mb-4">
+          Profesor je označio greške i napravio ispravke direktno u tvom eseju
+        </p>
+        <ReadOnlyEditor content={feedback?.feedback_essay} />
+      </div>
+    )}
 
-      {/* FEEDBACK — samo ako je reviewed */}
-      {isReviewed && (
-        <>
-          {/* FEEDBACK TEKST */}
-          <div className="bg-white rounded-2xl shadow-md p-6 mb-6">
-            <h2 className="text-lg font-semibold text-[#00296b] mb-2">
-              Feedback profesora
-            </h2>
-            {isText && (
-              <p className="text-sm text-gray-500 mb-4">
-                Profesor je označio greške i napravio ispravke direktno u tvom eseju
-              </p>
-            )}
-            {isAudio ? (
-              <div className="bg-gray-50 rounded-xl p-4 text-gray-700 text-sm leading-relaxed">
-                {feedback?.feedback_essay
-                  ? feedback.feedback_essay
-                  : <span className="text-gray-400">Nema feedback teksta</span>}
-              </div>
-            ) : (
-              <ReadOnlyEditor content={feedback?.feedback_essay} />
-            )}
+    {/* OPĆI KOMENTAR + NIVO */}
+    {(feedback?.feedback_general || feedback?.assessed_level) && (
+      <div className="bg-white rounded-2xl shadow-md p-6">
+        {feedback?.assessed_level && (
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-sm font-medium text-gray-700">
+              Procijenjeni nivo:
+            </span>
+            <span className="bg-indigo-100 text-indigo-700 px-4 py-1 rounded-full font-bold text-sm">
+              {feedback.assessed_level}
+            </span>
           </div>
-
-          {/* OPĆI KOMENTAR + NIVO */}
-          {(feedback?.feedback_general || feedback?.assessed_level) && (
-            <div className="bg-white rounded-2xl shadow-md p-6">
-              {feedback?.assessed_level && (
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-sm font-medium text-gray-700">
-                    Procijenjeni nivo:
-                  </span>
-                  <span className="bg-indigo-100 text-indigo-700 px-4 py-1 rounded-full font-bold text-sm">
-                    {feedback.assessed_level}
-                  </span>
-                </div>
-              )}
-              {feedback?.feedback_general && (
-                <div>
-                  <p className="text-sm font-medium text-gray-700 mb-2">
-                    Opći komentar:
-                  </p>
-                  <div className="bg-gray-50 rounded-xl p-4 text-gray-700 text-sm leading-relaxed">
-                    {feedback.feedback_general}
-                  </div>
-                </div>
-              )}
+        )}
+        {feedback?.feedback_general && (
+          <div>
+            <p className="text-sm font-medium text-gray-700 mb-2">
+              {isAudio ? "Feedback profesora:" : "Opći komentar:"}
+            </p>
+            <div className="bg-gray-50 rounded-xl p-4 text-gray-700 text-sm leading-relaxed">
+              {feedback.feedback_general}
             </div>
-          )}
-        </>
-      )}
+          </div>
+        )}
+      </div>
+    )}
+  </>
+)}
 
       {/* PENDING PORUKA */}
       {isPending && (
