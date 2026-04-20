@@ -1,9 +1,10 @@
 import { useState } from "react";
+import api from "../lib/api";  
 
 function Register() {
   const [formData, setFormData] = useState({
     name: "",
-    lastName:"",
+    lastName: "",
     email: "",
     password: "",
   });
@@ -19,35 +20,19 @@ function Register() {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const { data } = await api.post("/auth/register", formData);
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.message);
-        return;
-      }
-
-      // spremi token
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.role);
       localStorage.setItem("name", data.name);
 
-      // redirect (student dashboard)
       window.location.href = "/";
 
     } catch (err) {
-       console.error("REGISTER ERROR:", err);
-       alert("Server error");
+      console.error("REGISTER ERROR:", err);
+      alert(err.response?.data?.message || "Server error");
     }
   };
-
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
